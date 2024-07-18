@@ -6,6 +6,7 @@ from fisher_py.raw_file_reader import RawFileReaderAdapter, RawFileAccess
 from fisher_py.data import Device
 from fisher_py.data.business import Scan
 
+
 # Get spectrum from file and return x (mass) and y (intensity)
 def get_spectrum_data(raw_file: RawFileAccess, scan_number: int):
     # Get the scan from the raw file
@@ -45,7 +46,9 @@ def plot_spectrum(mass_list, intensity_list, output_path):
 if __name__ == "__main__":
     try:
         # Define the raw file name
-        filename = "Raw/2.raw"
+        fileindex = input("Enter the raw file index (1, 2, 3, ...): ")
+        fileindex = int(fileindex)
+        filename = f"Raw/{fileindex}.raw"
         args = sys.argv[1:]
         if len(args) > 0:
             filename = args[0]
@@ -78,13 +81,17 @@ if __name__ == "__main__":
         mass_list, intensity_list = get_spectrum_data(raw_file, scan_number)
 
         # Plot and save the spectrum data as an image
-        output_path = f"Output/spectrum_{scan_number}.png"
+        if not os.path.exists("Output"):
+            os.makedirs("Output")
+        output_path = f"Output/spectrum_{fileindex}_{scan_number}.png"
         plot_spectrum(mass_list, intensity_list, output_path)
         print(f"Spectrum image saved to {output_path}")
 
         # Close the raw file
         print(f"Closing {filename}")
         raw_file.dispose()
+
+        print(f"\n(C) Viktor Trummer, 2024")
 
     except Exception as e:
         print(e)
